@@ -1,7 +1,7 @@
 angular.module('oauthApp.services', []).factory('oauthService', function($q, $http, $rootScope, $state) {
 
-    var authorizationResult = false;
-
+    $rootScope.authorizationResult = false;
+    
     return {
         initialize: function() {
             //initialize OAuth.io with public key of the application
@@ -9,7 +9,7 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
             //try to create an authorization result when the page loads, this means a returning user won't have to click the twitter button again
         },
         isReady: function() {
-            return (authorizationResult);
+            return ($rootScope.authorizationResult);
         },
         
         connectProvider: function(backend) {
@@ -18,7 +18,7 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
             $rootScope.OAuth.popup(backend)
             .done(function(result) { //cache means to execute the callback if the tokens are already present
                 
-                    authorizationResult = result;
+                    $rootScope.authorizationResult = result;
                     console.log(result);
                     var token;
 
@@ -28,13 +28,6 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
                     else    //google or facebook
                         token = "OAuthToken "+result.access_token;
 
-                    console.log("consulting me...");
-                    result.me().done(function(me) {
-                      //alert('Hello ' + me.name);
-                      console.log(me);
-                    }).fail(function(err) {
-                      //todo when the OAuth flow failed
-                    });
 
                     var api_backend;
                     if(backend=="google")
@@ -62,14 +55,14 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
 
                             }
                             else{
-                                authorizationResult = false;
+                                $rootScope.authorizationResult = false;
                             }
                         }   
                     });
                     loginPromise.error(function(data, status, headers, config){
                         console.error("Ha ocurrido un error");
                         console.error(data);
-                        authorizationResult = false;
+                        $rootScope.authorizationResult = false;
                         deferred.resolve(data);
                     });*/
 
@@ -82,23 +75,51 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
             return deferred.promise;
         },
         
-        /*getUser: function () {
-            //create a deferred object using Angular's $q service
-            var deferred = $q.defer();
-            var promise = authorizationResult.get('/1.1/statuses/home_timeline.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
-                //when the data is retrieved resolved the deferred object
-                deferred.resolve(data)
-            });
-            //return the promise of the deferred object
-            return deferred.promise;
-        },*/
+        
         clearCache: function() {
             $rootScope.authenticated = false;
             //OAuth.clearCache();
-            authorizationResult = false;
+            $rootScope.authorizationResult = false;
             
             delete $rootScope.auth_data;
             delete $rootScope.authenticated;
+        },
+
+        getCurrentUser: function() {
+            var deferred = $q.defer();
+
+            var promise = $rootScope.authorizationResult.me().done(function(me) {
+                deferred.resolve(me);
+                console.log(me);
+            }).fail(function(err) {
+              //todo when the OAuth flow failed
+            });
+            return deferred.promise;
+        },
+
+        getSuggestions: function () {
+            //create a deferred object using Angular's $q service
+            var deferred = $q.defer();
+            var promise = $rootScope.authorizationResult.get('/1.1/users/suggestions.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+                //when the data is retrieved resolved the deferred object
+                deferred.resolve(data);
+                console.log(data);
+            });
+            //return the promise of the deferred object
+            return deferred.promise;
+        },
+
+        getSuggestionMembers: function (slug) {
+            console.log("consulting: "+slug)
+            //create a deferred object using Angular's $q service
+            var deferred = $q.defer();
+            var promise = $rootScope.authorizationResult.get('/1.1/users/suggestions/'+slug+'.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+                //when the data is retrieved resolved the deferred object
+                deferred.resolve(data);
+                //console.log(data);
+            });
+            //return the promise of the deferred object
+            return deferred.promise;
         },
 
         

@@ -10,7 +10,9 @@ angular.module('starter.controllers', [])
   //});
 
   // Form data for the login modal
-  $scope.loginData = {};
+  $scope.loginData = null;
+  $scope.myself = null;
+  $scope.suggested = [];
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -30,7 +32,7 @@ angular.module('starter.controllers', [])
   };
 
   // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
+  /*$scope.doLogin = function() {
     console.log('Doing login', $scope.loginData);
 
     // Simulate a login delay. Remove this and replace with your login
@@ -38,27 +40,40 @@ angular.module('starter.controllers', [])
     $timeout(function() {
       $scope.closeLogin();
     }, 1000);
-  };
+  };*/
 
   $scope.connectButton = function(backend) {
       promiseB = oauthService.connectProvider(backend).then(function(data) {
       });
 
-      /*promiseB.then(function(data){
-          oauthService.getCurrentUser().then(function(data){
-            $scope.user = data;
+      promiseB.then(function(data){
+          oauthService.getCurrentUser().then(function(data2){
+            $scope.myself = data2;
           });  
-          $scope.modal.hide();
-          if($rootScope.redirect != null){
-            $state.go($rootScope.redirect);  
-            $rootScope.redirect = null;
-          }
-      });*/
+
+          promiseC = oauthService.getSuggestions().then(function(data2){
+            $scope.suggestions = data2;
+
+            for(var i=0;i < 2;i++){ //$scope.suggestions.length
+              oauthService.getSuggestionMembers($scope.suggestions[i].slug).then(function(data3){
+                console.log(data3);
+                for(var j=0;j < data3.users.length;j++){
+                  $scope.suggested.push(data3.users[j]);
+                }
+              })
+            }
+          });  
+
+          //promiseC.then(function(data){
+
+          //});
+      });
+
+      
+
+      
+
       $scope.modal.hide();
-      if($rootScope.redirect != null){
-        $state.go($rootScope.redirect);  
-        $rootScope.redirect = null;
-      }
   };
 })
 

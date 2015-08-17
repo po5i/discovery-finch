@@ -18,17 +18,21 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <ion-item menu-close ng-click="login()">
+        <ion-item menu-close class="item item-avatar" ng-show="myself">
+          <img ng-src="{{myself.avatar}}">
+          <h2>@{{myself.alias}}</h2>
+        </ion-item>
+        <ion-item menu-close ng-click="login()" ng-hide="myself">
           Login
         </ion-item>
-        <ion-item menu-close href="#/app/search">
+        <ion-item menu-close href="#/app/search" ng-show="myself">
           Search
         </ion-item>
-        <ion-item menu-close href="#/app/browse">
+        <ion-item menu-close href="#/app/browse" ng-show="myself">
           Browse
         </ion-item>
-        <ion-item menu-close href="#/app/playlists">
-          Playlists
+        <ion-item menu-close href="#/app/playlists" ng-show="myself">
+          Settings
         </ion-item>
       </ion-list>
     </ion-content>
