@@ -12,7 +12,7 @@ angular.module('starter.controllers', [])
   // Form data for the login modal
   $scope.loginData = null;
   $scope.myself = null;
-  $scope.suggested = [];
+  $scope.cards = [];
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -58,23 +58,42 @@ angular.module('starter.controllers', [])
               oauthService.getSuggestionMembers($scope.suggestions[i].slug).then(function(data3){
                 console.log(data3);
                 for(var j=0;j < data3.users.length;j++){
-                  $scope.suggested.push(data3.users[j]);
+                  $scope.cards.push(data3.users[j]);
                 }
               })
             }
           });  
-
-          //promiseC.then(function(data){
-
-          //});
       });
 
-      
+      $scope.cardDestroyed = function(index) {
+        $scope.cards.splice(index, 1);
+      };
+
+      $scope.cardSwiped = function(index) {
+        //var newCard = // new card data
+        //$scope.cards.push(newCard);
+      };
 
       
 
       $scope.modal.hide();
   };
+
+  // detectar requireLogin
+  $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+    if(("data" in toState)){
+      //console.log(toState);
+      var requireLogin = toState.data.requireLogin;
+
+      if (requireLogin && (typeof $rootScope.authenticated === 'undefined')) {
+        event.preventDefault();
+        $rootScope.redirect = toState.name;
+        // get me a login!
+        $scope.modal.show();
+      }
+    }
+  });
+
 })
 
 .controller('PlaylistsCtrl', function($scope) {

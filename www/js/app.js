@@ -59,7 +59,10 @@ angular.module('starter', ['ionic', 'starter.controllers','oauthApp.services','i
       'menuContent': {
         templateUrl: 'templates/search.html'
       }
-    }
+    },
+    //data: {
+    //  requireLogin: true
+    //}
   })
 
   .state('app.browse', {
@@ -68,6 +71,9 @@ angular.module('starter', ['ionic', 'starter.controllers','oauthApp.services','i
         'menuContent': {
           templateUrl: 'templates/browse.html'
         }
+      },
+      data: {
+        requireLogin: true
       }
     })
     .state('app.playlists', {
@@ -90,5 +96,5 @@ angular.module('starter', ['ionic', 'starter.controllers','oauthApp.services','i
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/browse');
+  $urlRouterProvider.otherwise('/app/search');
 });

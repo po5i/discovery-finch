@@ -1,41 +1,46 @@
 <ion-view view-title="Browse">
   <ion-content>
-    <h1></h1>
+    
+    <td-cards>
+	  <td-card ng-repeat="suggested in cards" on-destroy="cardDestroyed($index)" on-swipe="cardSwiped($index)">
+	    
+	    <div class="list card">
+		  <div class="item">
+		    <h2>@{{suggested.screen_name}}  ({{suggested.name}})</h2>
+		    <p ng-show="suggested.location"><i class="icon ion-android-pin"></i> {{suggested.location}}</p>
+		  </div>
 
-    <div class="list card">
+		  <div class="item item-body">
+		    <img ng-src="{{suggested.profile_image_url.replace('_normal','')}}" class="full-image" />
+		    <p>
+		      {{suggested.description}}
+		    </p>
+		    <p>
+		      <a href="#" class="subdued">{{suggested.followers_count}} Followers</a>
+		      <a href="#" class="subdued">{{suggested.friends_count}} Friends</a>
+		    </p>
+		  </div>
 
-	  <div class="item">
-	    <h2>{{suggested[0].name}}</h2>
-	    <p ng-show="suggested[0].location"><i class="icon ion-android-pin"></i> {{suggested[0].location}}</p>
-	  </div>
+		  <div class="item tabs tabs-secondary tabs-icon-left">
+		    <a class="tab-item" href="#">
+		      <i class="icon ion-android-favorite"></i>
+		      Favorite
+		    </a>
+		    <a class="tab-item" href="#">
+		      <i class="icon ion-social-twitter"></i>
+		      Follow
+		    </a>
+		    <a class="tab-item" href="#">
+		      <i class="icon ion-ios-fastforward"></i>
+		      Next
+		    </a>
+		  </div>
+		</div>
+		
+	  </td-card>
+	</td-cards>
 
-	  <div class="item item-body">
-	    <img ng-src="{{suggested[0].profile_image_url.replace('_normal','')}}" class="full-image" />
-	    <p>
-	      {{suggested[0].description}}
-	    </p>
-	    <p>
-	      <a href="#" class="subdued">{{suggested[0].followers_count}} Followers</a>
-	      <a href="#" class="subdued">{{suggested[0].friends_count}} Friends</a>
-	    </p>
-	  </div>
-
-	  <div class="item tabs tabs-secondary tabs-icon-left">
-	    <a class="tab-item" href="#">
-	      <i class="icon ion-android-favorite"></i>
-	      Favorite
-	    </a>
-	    <a class="tab-item" href="#">
-	      <i class="icon ion-social-twitter"></i>
-	      Follow
-	    </a>
-	    <a class="tab-item" href="#">
-	      <i class="icon ion-ios-fastforward"></i>
-	      Next
-	    </a>
-	  </div>
-
-	</div>
+    
 
 
   </ion-content>

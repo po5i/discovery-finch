@@ -37,6 +37,7 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
 
                     
                     $http.defaults.useXDomain = true;
+                    $rootScope.authenticated = true;
                     /*var loginPromise = $http.post($rootScope.api_url+'/api-token/login/' + api_backend + '/',"",{
                         headers: {'Authorization': token}
                     });
