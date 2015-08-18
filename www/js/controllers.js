@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, oauthService, $rootScope) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, oauthService, $rootScope, $state) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -13,13 +13,19 @@ angular.module('starter.controllers', [])
   $scope.loginData = null;
   $scope.myself = null;
   $scope.cards = [];
+  $scope.suggested = [];
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.modal = modal;
+    if(!$rootScope.authenticated){
+      $scope.modal.show();
+    }
   });
+  
+
 
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
@@ -53,31 +59,60 @@ angular.module('starter.controllers', [])
 
           promiseC = oauthService.getSuggestions().then(function(data2){
             $scope.suggestions = data2;
+            var only = true;
 
             for(var i=0;i < 2;i++){ //$scope.suggestions.length
               oauthService.getSuggestionMembers($scope.suggestions[i].slug).then(function(data3){
                 console.log(data3);
                 for(var j=0;j < data3.users.length;j++){
-                  $scope.cards.push(data3.users[j]);
+
+                  data3.users[j].category = data3.name;
+                  
+                  if(only){
+                    //push the first element
+                    only = false;
+                    $scope.cards.push(data3.users[j]);
+                  }
+                  else{
+                    $scope.suggested.push(data3.users[j]);
+                  }
+                  
                 }
               })
             }
           });  
       });
 
-      $scope.cardDestroyed = function(index) {
-        $scope.cards.splice(index, 1);
-      };
-
-      $scope.cardSwiped = function(index) {
-        //var newCard = // new card data
-        //$scope.cards.push(newCard);
-      };
-
-      
-
       $scope.modal.hide();
   };
+
+  $scope.cardDestroyed = function(index) {
+    $scope.cards.splice(index, 1);
+  };
+
+  $scope.cardSwiped = function(index) {
+    newCard = $scope.suggested.shift();
+    $scope.cards.push(newCard);
+  };
+
+  $scope.next = function(index) {
+    $scope.cards.splice(index, 1);
+    newCard = $scope.suggested.shift();
+    $scope.cards.push(newCard);
+  };
+
+  $scope.follow = function(user_id) {
+    oauthService.followUser(user_id).then(function(data){
+    });  
+
+  };
+
+  $scope.favorite = function(user_id,owner_id) {
+    oauthService.favoriteUser(user_id,owner_id).then(function(data){
+    });  
+  };
+
+
 
   // detectar requireLogin
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {

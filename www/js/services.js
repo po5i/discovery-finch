@@ -1,4 +1,4 @@
-angular.module('oauthApp.services', []).factory('oauthService', function($q, $http, $rootScope, $state) {
+angular.module('oauthApp.services', []).factory('oauthService', function($q, $http, $rootScope, $state, localStorageService) {
 
     $rootScope.authorizationResult = false;
     
@@ -21,6 +21,8 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
                     $rootScope.authorizationResult = result;
                     console.log(result);
                     var token;
+
+                    localStorageService.set('authorizationResult',result);
 
                     //django
                     if(backend=="twitter")
@@ -117,6 +119,37 @@ angular.module('oauthApp.services', []).factory('oauthService', function($q, $ht
             var promise = $rootScope.authorizationResult.get('/1.1/users/suggestions/'+slug+'.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
                 //when the data is retrieved resolved the deferred object
                 deferred.resolve(data);
+                //console.log(data);
+            });
+            //return the promise of the deferred object
+            return deferred.promise;
+        },
+
+        followUser: function(user_id){
+            var deferred = $q.defer();
+            var promise = $rootScope.authorizationResult.post('/1.1/friendships/create.json?user_id='+user_id).done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+                //when the data is retrieved resolved the deferred object
+                deferred.resolve(data);
+                //console.log(data);
+                alert("Now following");
+            });
+            //return the promise of the deferred object
+            return deferred.promise;
+        },
+
+        favoriteUser: function(user_id,owner_id){
+            $rootScope.authorizationResult.post('/1.1/lists/create.json?name=DiscoveryFinch&mode=public').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+                //when the data is retrieved resolved the deferred object
+                //deferred.resolve(data);
+                console.log(data);
+            });
+
+            //TODO: async problem here
+            var deferred = $q.defer();
+            var promise = $rootScope.authorizationResult.post('/1.1/lists/members/create.json?slug=DiscoveryFinch&owner_id='+owner_id+'&user_id='+user_id).done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+                //when the data is retrieved resolved the deferred object
+                deferred.resolve(data);
+                alert("Favorited");
                 //console.log(data);
             });
             //return the promise of the deferred object

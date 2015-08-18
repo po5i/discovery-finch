@@ -6,8 +6,8 @@
 	    
 	    <div class="list card">
 		  <div class="item">
-		    <h2>@{{suggested.screen_name}}  ({{suggested.name}})</h2>
-		    <p ng-show="suggested.location"><i class="icon ion-android-pin"></i> {{suggested.location}}</p>
+		    <h2>{{suggested.name}}</h2>
+		    <p>@{{suggested.screen_name}} <span ng-show="suggested.location"><i class="icon ion-android-pin"></i> {{suggested.location}}</span></p>
 		  </div>
 
 		  <div class="item item-body">
@@ -18,19 +18,20 @@
 		    <p>
 		      <a href="#" class="subdued">{{suggested.followers_count}} Followers</a>
 		      <a href="#" class="subdued">{{suggested.friends_count}} Friends</a>
+		      <a href="#" class="subdued">{{suggested.category}}</a>
 		    </p>
 		  </div>
 
 		  <div class="item tabs tabs-secondary tabs-icon-left">
-		    <a class="tab-item" href="#">
+		    <a class="tab-item" href="#" ng-click="favorite(suggested.id,myself.id)">
 		      <i class="icon ion-android-favorite"></i>
 		      Favorite
 		    </a>
-		    <a class="tab-item" href="#">
+		    <a class="tab-item" href="#" ng-click="follow(suggested.id)">
 		      <i class="icon ion-social-twitter"></i>
 		      Follow
 		    </a>
-		    <a class="tab-item" href="#">
+		    <a class="tab-item" href="#" ng-click="next($index)">
 		      <i class="icon ion-ios-fastforward"></i>
 		      Next
 		    </a>
