@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers','oauthApp.services','ionic.contrib.ui.tinderCards','LocalStorageModule'])
 
-.run(function($ionicPlatform, $rootScope, localStorageService, $ionicLoading) {
+.run(function($ionicPlatform, $rootScope, localStorageService, $ionicLoading, oauthService) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -40,15 +40,16 @@ angular.module('starter', ['ionic', 'starter.controllers','oauthApp.services','i
 
     $rootScope.authenticated = false;
     $rootScope.redirect = null;
+
+    // persistent session
+    /*var currentUser = localStorageService.get('authorizationResult');
+    if(currentUser){
+      //console.log(currentUser);
+      $rootScope.authorizationResult = currentUser;
+      $rootScope.authenticated = true;
+    }*/
   });
 
-  
-  // persistent session
-  //var currentUser = localStorageService.get('authorizationResult');
-  //if(currentUser){
-  //  $rootScope.authorizationResult = currentUser;
-  //  $rootScope.authenticated = true;
-  //}
 
   //loading
   $rootScope.$on('loading:show', function() {
